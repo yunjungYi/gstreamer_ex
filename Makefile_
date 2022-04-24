@@ -1,0 +1,29 @@
+#GLS_DEV_HOME=/home/sooeun/Dev/GiGA_Streamer
+GLS_DEV_HOME=/home/yjlee/serv2/giga_streamer
+GLS_SDK_PATH=$GLS_DEV_HOME/devenv
+GLS_LIBRARIES="$GLS_SDK_PATH/lib"
+GLS_LIBRARIES64="$GLS_SDK_PATH/lib64"
+
+CFLAGS = -g -std=c++11 -Wall -Wextra #-Wno-unused-parameter -Wno-unknown-pragmas -Wno-unused-function
+CFLAGS += $(shell pkg-config --cflags gstreamer-1.0 gstreamer-rtsp-server-1.0 gstreamer-rtsp-1.0) -fpermissive 
+LDFLAGS = $(shell pkg-config --libs gstreamer-1.0 gstreamer-rtsp-server-1.0 gstreamer-rtsp-1.0 gstreamer-plugins-bad-1.0) -L$(GLS_LIBRARIES) -lssl -lcrypto
+TARGET = RTSPServer_Memory
+#TARGET = test_pipeline
+#TARGET = streamer
+#TARGET = ex1
+#SRC = $(wildcard *.cpp)
+SRC = $(wildcard rtspserver.cpp)
+#SRC = $(wildcard test_pipeline.cpp)
+#SRC = $(wildcard ex1.cpp)
+OBJ = $(SRC:%.cpp=%.o)
+all: $(TARGET)
+CPP=g++
+
+$(TARGET): $(OBJ)
+	$(CPP) -Wl,-rpath,/home/yjlee/Lib/gstreamer-sdk/lib -o $@ $(OBJ) $(LDFLAGS)
+
+%.o: %.cpp
+	$(CPP) -c $< -o $@ $(CFLAGS) -I.
+
+clean:
+	rm -f *.o streamer

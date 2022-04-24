@@ -1,0 +1,28 @@
+##last revise 22.01.06 build for light gstreamer ####
+
+BUILD_LIB_PATH="/home/gigasurv/lib"
+
+
+### LIB PATH
+LD_LIBRARY_PATH="$BUILD_LIB_PATH/gstreamer-sdk/lib:$BUILD_LIB_PATH/system-sdk/lib:$BUILD_LIB_PATH/system-sdk/lib64:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH
+LIBRARY_PATH="$BUILD_LIB_PATH/gstreamer-sdk/lib:$BUILD_LIB_PATH/system-sdk/lib:$BUILD_LIB_PATH/system-sdk/lib64:$LIBRARY_PATH"
+export LIBRARY_PATH
+
+
+### PKG_CONFIG
+#export PKG_CONFIG_PATH="${GLS_GST_LIBRARIES}/pkgconfig:$PKG_CONFIG_PATH"
+##export PKG_CONFIG_PATH=`(echo $(pkg-config --variable pc_path pkg-config)${PKG_CONFIG_PATH:+:}${PKG_CONFIG_PATH})`
+GST_PKG_CONFIG_PATH="$BUILD_LIB_PATH/gstreamer-sdk/lib/pkgconfig"
+export PKG_CONFIG_PATH="$GST_PKG_CONFIG_PATH:$PKG_CONFIG_PATH"
+export GST_PLUGIN_SCANNER=$GLS_GST_SDK_PATH/libexec/gstreamer-1.0/gst-plugin-scanner
+
+### GLS_PLUGIN
+export GST_PLUGIN_SYSTEM_PATH=$BUILD_LIB_PATH/gstreamer-sdk/lib/gstreamer-1.0
+export GST_PLUGIN_PATH=$BUILD_LIB_PATH/gstreamer-sdk/lib/gstreamer-1.0
+
+### BINARY
+
+ADD_BIN=$BUILD_LIB_PATH/gstreamer-sdk/bin:$BUILD_LIB_PATH/system-sdk/bin
+export PATH=$ADD_BIN:$PATH
+

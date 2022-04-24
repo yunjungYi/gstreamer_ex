@@ -1,0 +1,126 @@
+\hypertarget{ex3__restart_8cpp}{}\section{ex3\+\_\+restart.\+cpp File Reference}
+\label{ex3__restart_8cpp}\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+{\ttfamily \#include $<$gst/gst.\+h$>$}\newline
+{\ttfamily \#include $<$glib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}gstnvdsmeta.\+h\char`\"{}}\newline
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{ex3__restart_8cpp_a31c4d57a0d5de39ac9631eb591e65612}{M\+A\+X\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+L\+EN}}~64
+\item 
+\#define \mbox{\hyperlink{ex3__restart_8cpp_a3951af71157f79f05f63448e448a328a}{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+V\+E\+H\+I\+C\+LE}}~0
+\item 
+\#define \mbox{\hyperlink{ex3__restart_8cpp_a4fd50f86ed61765cb2df60e98ab2b404}{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+P\+E\+R\+S\+ON}}~2
+\item 
+\#define \mbox{\hyperlink{ex3__restart_8cpp_a205bf61e7edba108f4c2583177aaa782}{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+W\+I\+D\+TH}}~1920
+\item 
+\#define \mbox{\hyperlink{ex3__restart_8cpp_a176fa743d79a90e228ee106fcbe8088f}{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+H\+E\+I\+G\+HT}}~1080
+\item 
+\#define \mbox{\hyperlink{ex3__restart_8cpp_a101d330e517e59af74548af43250668e}{M\+U\+X\+E\+R\+\_\+\+B\+A\+T\+C\+H\+\_\+\+T\+I\+M\+E\+O\+U\+T\+\_\+\+U\+S\+EC}}~40000
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{ex3__restart_8cpp_a0ddf1224851353fc92bfbff6f499fa97}{main}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+G\+Main\+Loop $\ast$ \mbox{\hyperlink{ex3__restart_8cpp_a35126dd286141bc2cc1f045de5e1f81a}{loop}} = N\+U\+LL
+\item 
+Gst\+Element $\ast$ \mbox{\hyperlink{ex3__restart_8cpp_a310ff227733a8a01cb68a9af5e132751}{pipeline}} = N\+U\+LL
+\item 
+gint \mbox{\hyperlink{ex3__restart_8cpp_a0744d1caabc3ea0353c601c1e0208b49}{frame\+\_\+number}} = 0
+\item 
+gchar \mbox{\hyperlink{ex3__restart_8cpp_ac636d421d0d316f98278a7fe54d26bba}{pgie\+\_\+classes\+\_\+str}} \mbox{[}4\mbox{]}\mbox{[}32\mbox{]}
+\item 
+\mbox{\hyperlink{ex3__restart_8cpp_a7847560c748814fd3070e9149a9578bd}{flag}} = T\+R\+UE
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{ex3__restart_8cpp_a31c4d57a0d5de39ac9631eb591e65612}\label{ex3__restart_8cpp_a31c4d57a0d5de39ac9631eb591e65612}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!M\+A\+X\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+L\+EN@{M\+A\+X\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+L\+EN}}
+\index{M\+A\+X\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+L\+EN@{M\+A\+X\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+L\+EN}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{M\+A\+X\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+L\+EN}{MAX\_DISPLAY\_LEN}}
+{\footnotesize\ttfamily \#define M\+A\+X\+\_\+\+D\+I\+S\+P\+L\+A\+Y\+\_\+\+L\+EN~64}
+
+\mbox{\Hypertarget{ex3__restart_8cpp_a101d330e517e59af74548af43250668e}\label{ex3__restart_8cpp_a101d330e517e59af74548af43250668e}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!M\+U\+X\+E\+R\+\_\+\+B\+A\+T\+C\+H\+\_\+\+T\+I\+M\+E\+O\+U\+T\+\_\+\+U\+S\+EC@{M\+U\+X\+E\+R\+\_\+\+B\+A\+T\+C\+H\+\_\+\+T\+I\+M\+E\+O\+U\+T\+\_\+\+U\+S\+EC}}
+\index{M\+U\+X\+E\+R\+\_\+\+B\+A\+T\+C\+H\+\_\+\+T\+I\+M\+E\+O\+U\+T\+\_\+\+U\+S\+EC@{M\+U\+X\+E\+R\+\_\+\+B\+A\+T\+C\+H\+\_\+\+T\+I\+M\+E\+O\+U\+T\+\_\+\+U\+S\+EC}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{M\+U\+X\+E\+R\+\_\+\+B\+A\+T\+C\+H\+\_\+\+T\+I\+M\+E\+O\+U\+T\+\_\+\+U\+S\+EC}{MUXER\_BATCH\_TIMEOUT\_USEC}}
+{\footnotesize\ttfamily \#define M\+U\+X\+E\+R\+\_\+\+B\+A\+T\+C\+H\+\_\+\+T\+I\+M\+E\+O\+U\+T\+\_\+\+U\+S\+EC~40000}
+
+\mbox{\Hypertarget{ex3__restart_8cpp_a176fa743d79a90e228ee106fcbe8088f}\label{ex3__restart_8cpp_a176fa743d79a90e228ee106fcbe8088f}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+H\+E\+I\+G\+HT@{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+H\+E\+I\+G\+HT}}
+\index{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+H\+E\+I\+G\+HT@{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+H\+E\+I\+G\+HT}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+H\+E\+I\+G\+HT}{MUXER\_OUTPUT\_HEIGHT}}
+{\footnotesize\ttfamily \#define M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+H\+E\+I\+G\+HT~1080}
+
+\mbox{\Hypertarget{ex3__restart_8cpp_a205bf61e7edba108f4c2583177aaa782}\label{ex3__restart_8cpp_a205bf61e7edba108f4c2583177aaa782}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+W\+I\+D\+TH@{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+W\+I\+D\+TH}}
+\index{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+W\+I\+D\+TH@{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+W\+I\+D\+TH}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+W\+I\+D\+TH}{MUXER\_OUTPUT\_WIDTH}}
+{\footnotesize\ttfamily \#define M\+U\+X\+E\+R\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+W\+I\+D\+TH~1920}
+
+\mbox{\Hypertarget{ex3__restart_8cpp_a4fd50f86ed61765cb2df60e98ab2b404}\label{ex3__restart_8cpp_a4fd50f86ed61765cb2df60e98ab2b404}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+P\+E\+R\+S\+ON@{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+P\+E\+R\+S\+ON}}
+\index{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+P\+E\+R\+S\+ON@{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+P\+E\+R\+S\+ON}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+P\+E\+R\+S\+ON}{PGIE\_CLASS\_ID\_PERSON}}
+{\footnotesize\ttfamily \#define P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+P\+E\+R\+S\+ON~2}
+
+\mbox{\Hypertarget{ex3__restart_8cpp_a3951af71157f79f05f63448e448a328a}\label{ex3__restart_8cpp_a3951af71157f79f05f63448e448a328a}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+V\+E\+H\+I\+C\+LE@{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+V\+E\+H\+I\+C\+LE}}
+\index{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+V\+E\+H\+I\+C\+LE@{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+V\+E\+H\+I\+C\+LE}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+V\+E\+H\+I\+C\+LE}{PGIE\_CLASS\_ID\_VEHICLE}}
+{\footnotesize\ttfamily \#define P\+G\+I\+E\+\_\+\+C\+L\+A\+S\+S\+\_\+\+I\+D\+\_\+\+V\+E\+H\+I\+C\+LE~0}
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{ex3__restart_8cpp_a0ddf1224851353fc92bfbff6f499fa97}\label{ex3__restart_8cpp_a0ddf1224851353fc92bfbff6f499fa97}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!main@{main}}
+\index{main@{main}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{ex3__restart_8cpp_a7847560c748814fd3070e9149a9578bd}\label{ex3__restart_8cpp_a7847560c748814fd3070e9149a9578bd}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!flag@{flag}}
+\index{flag@{flag}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{flag}{flag}}
+{\footnotesize\ttfamily flag = T\+R\+UE}
+
+\mbox{\Hypertarget{ex3__restart_8cpp_a0744d1caabc3ea0353c601c1e0208b49}\label{ex3__restart_8cpp_a0744d1caabc3ea0353c601c1e0208b49}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!frame\+\_\+number@{frame\+\_\+number}}
+\index{frame\+\_\+number@{frame\+\_\+number}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{frame\+\_\+number}{frame\_number}}
+{\footnotesize\ttfamily gint frame\+\_\+number = 0}
+
+\mbox{\Hypertarget{ex3__restart_8cpp_a35126dd286141bc2cc1f045de5e1f81a}\label{ex3__restart_8cpp_a35126dd286141bc2cc1f045de5e1f81a}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!loop@{loop}}
+\index{loop@{loop}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{loop}{loop}}
+{\footnotesize\ttfamily G\+Main\+Loop$\ast$ loop = N\+U\+LL}
+
+\mbox{\Hypertarget{ex3__restart_8cpp_ac636d421d0d316f98278a7fe54d26bba}\label{ex3__restart_8cpp_ac636d421d0d316f98278a7fe54d26bba}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!pgie\+\_\+classes\+\_\+str@{pgie\+\_\+classes\+\_\+str}}
+\index{pgie\+\_\+classes\+\_\+str@{pgie\+\_\+classes\+\_\+str}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{pgie\+\_\+classes\+\_\+str}{pgie\_classes\_str}}
+{\footnotesize\ttfamily gchar pgie\+\_\+classes\+\_\+str\mbox{[}4\mbox{]}\mbox{[}32\mbox{]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+= \{ \textcolor{stringliteral}{"Vehicle"}, \textcolor{stringliteral}{"TwoWheeler"}, \textcolor{stringliteral}{"Person"},
+  \textcolor{stringliteral}{"Roadsign"}
+\}
+\end{DoxyCode}
+\mbox{\Hypertarget{ex3__restart_8cpp_a310ff227733a8a01cb68a9af5e132751}\label{ex3__restart_8cpp_a310ff227733a8a01cb68a9af5e132751}} 
+\index{ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}!pipeline@{pipeline}}
+\index{pipeline@{pipeline}!ex3\+\_\+restart.\+cpp@{ex3\+\_\+restart.\+cpp}}
+\subsubsection{\texorpdfstring{pipeline}{pipeline}}
+{\footnotesize\ttfamily Gst\+Element$\ast$ pipeline = N\+U\+LL}
+

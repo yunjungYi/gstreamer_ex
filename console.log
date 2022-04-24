@@ -1,0 +1,80 @@
+==899730== Memcheck, a memory error detector
+==899730== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==899730== Using Valgrind-3.17.0 and LibVEX; rerun with -h for copyright info
+==899730== Command: ./rtspd
+==899730== 
+DELETE_SHM_PATH
+CREATE_DIR_PATH_SUCCESS
+Server(192.168.33.53:8551) CREATED!
+stream ready at 8551:/babo2/live
+Check expireds session & cleanup : 0
+Now Create & Play
+url : rtsp://192.168.33.5:1936/gigaeyeslive/0000010482_200000104821032.stream
+Dynamic pad created, linking src-sink : element front-queue
+sinkpad? linked to pipeline
+Check expireds session & cleanup : 0
+STATE :4
+Check expireds session & cleanup : 0
+STATE :4
+Check expireds session & cleanup : 0
+STATE :4
+Check expireds session & cleanup : 0
+STATE :4
+Check expireds session & cleanup : 0
+STATE :4
+Check expireds session & cleanup : 0
+STATE :4
+Check expireds session & cleanup : 0
+STATE :4
+Check expireds session & cleanup : 0
+STATE :4
+Check expireds session & cleanup : 0
+STATE :4
+==899730== 
+==899730== Process terminating with default action of signal 15 (SIGTERM)
+==899730==    at 0x77B4A41: poll (in /usr/lib64/libc-2.28.so)
+==899730==    by 0x63750F3: g_main_context_poll (gmain.c:4383)
+==899730==    by 0x63750F3: g_main_context_iterate.isra.23 (gmain.c:4079)
+==899730==    by 0x6375431: g_main_loop_run (gmain.c:4278)
+==899730==    by 0x402C30: main (in /home/gigasurv/example/rtspd)
+==899730== 
+==899730== HEAP SUMMARY:
+==899730==     in use at exit: 3,097,558 bytes in 26,837 blocks
+==899730==   total heap usage: 141,781 allocs, 114,944 frees, 181,296,307 bytes allocated
+==899730== 
+==899730== 12 bytes in 1 blocks are definitely lost in loss record 452 of 6,881
+==899730==    at 0x4C360A5: malloc (vg_replace_malloc.c:380)
+==899730==    by 0x6331A2F: g_malloc (gmem.c:99)
+==899730==    by 0x634B04E: g_strdup (gstrfuncs.c:363)
+==899730==    by 0x5D860FC: gst_object_get_name (gstobject.c:682)
+==899730==    by 0x401DC0: on_pad_added(_GstElement*, _GstPad*, void*) (in /home/gigasurv/example/rtspd)
+==899730==    by 0x609EF46: g_cclosure_marshal_VOID__OBJECTv (gmarshal.c:1910)
+==899730==    by 0x609BEA6: _g_closure_invoke_va (gclosure.c:873)
+==899730==    by 0x60B5EBC: g_signal_emit_valist (gsignal.c:3306)
+==899730==    by 0x60B6B61: g_signal_emit (gsignal.c:3453)
+==899730==    by 0x5DAEB28: gst_element_add_pad (gstelement.c:795)
+==899730==    by 0x9B59B53: new_manager_pad (gstrtspsrc.c:3467)
+==899730==    by 0x609EF46: g_cclosure_marshal_VOID__OBJECTv (gmarshal.c:1910)
+==899730==    by 0x609BEA6: _g_closure_invoke_va (gclosure.c:873)
+==899730==    by 0x60B5EBC: g_signal_emit_valist (gsignal.c:3306)
+==899730==    by 0x60B6B61: g_signal_emit (gsignal.c:3453)
+==899730==    by 0x5DAEB28: gst_element_add_pad (gstelement.c:795)
+==899730==    by 0x10A1C09F: expose_recv_src_pad.isra.8 (gstrtpbin.c:3402)
+==899730==    by 0x8B236CC: ffi_call_unix64 (unix64.S:101)
+==899730==    by 0x8B22818: ffi_call_int (ffi64.c:667)
+==899730==    by 0x609C8E4: g_cclosure_marshal_generic_va (gclosure.c:1614)
+==899730== 
+==899730== LEAK SUMMARY:
+==899730==    definitely lost: 12 bytes in 1 blocks
+==899730==    indirectly lost: 0 bytes in 0 blocks
+==899730==      possibly lost: 0 bytes in 0 blocks
+==899730==    still reachable: 564,861 bytes in 1,756 blocks
+==899730==                       of which reachable via heuristic:
+==899730==                         length64           : 2,128 bytes in 46 blocks
+==899730==                         newarray           : 1,840 bytes in 35 blocks
+==899730==         suppressed: 2,339,357 bytes in 24,178 blocks
+==899730== Reachable blocks (those to which a pointer was found) are not shown.
+==899730== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==899730== 
+==899730== For lists of detected and suppressed errors, rerun with: -s
+==899730== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 78 from 78)

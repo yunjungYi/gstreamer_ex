@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/yjlee/Pro2/gstreamer-sdk/lib/gstreamer-1.0"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/local/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++98",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}

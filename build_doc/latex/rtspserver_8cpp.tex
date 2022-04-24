@@ -1,0 +1,114 @@
+\hypertarget{rtspserver_8cpp}{}\section{rtspserver.\+cpp File Reference}
+\label{rtspserver_8cpp}\index{rtspserver.\+cpp@{rtspserver.\+cpp}}
+
+
+make your own rtspserver with gstreamer  
+
+
+{\ttfamily \#include $<$gst/gst.\+h$>$}\newline
+{\ttfamily \#include $<$sys/stat.\+h$>$}\newline
+{\ttfamily \#include $<$glib/gstdio.\+h$>$}\newline
+{\ttfamily \#include $<$gst/rtsp-\/server/rtsp-\/server.\+h$>$}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structSrcObject}{Src\+Object}}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{rtspserver_8cpp_ab49f0588f844e6e0dee82cc927102996}{M\+O\+U\+N\+T\+\_\+\+P\+A\+TH}}~\char`\"{}/babo2/live\char`\"{}
+\item 
+\#define \mbox{\hyperlink{rtspserver_8cpp_af7e4bc2f51096807cbf7590ab0b97f69}{S\+H\+M\+\_\+\+P\+A\+TH}}~\char`\"{}/tmp/babo2/live\char`\"{}
+\item 
+\#define \mbox{\hyperlink{rtspserver_8cpp_a958005d83d3cc044713cb225d0858211}{D\+I\+R\+\_\+\+P\+A\+TH}}~\char`\"{}/tmp/babo2\char`\"{}
+\item 
+\#define \mbox{\hyperlink{rtspserver_8cpp_a3ffdaeae0bc4f2b1e8634a9ad6b9a072}{S\+\_\+\+I\+R\+W\+X\+U\+GO}}~(S\+\_\+\+I\+R\+W\+XU$\vert$S\+\_\+\+I\+R\+W\+XG$\vert$S\+\_\+\+I\+R\+W\+XO)
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{rtspserver_8cpp_a65798ab3aa52fa5dc5b51fc5b9aebb6e}{Create\+Src\+Object}} (\mbox{\hyperlink{structSrcObject}{Src\+Object}} $\ast$s)
+\item 
+bool \mbox{\hyperlink{rtspserver_8cpp_aa0a199fe147832128d7af55a6fb7bdf6}{Delete\+Object}} (\mbox{\hyperlink{structSrcObject}{Src\+Object}} $\ast$s)
+\item 
+void \mbox{\hyperlink{rtspserver_8cpp_a6a0c7845028a34b8232698d37d6bc5b3}{new\+\_\+session\+\_\+cb}} (G\+Object $\ast$client, Gst\+R\+T\+S\+P\+Session $\ast$session, gpointer user\+\_\+data)
+\item 
+int \mbox{\hyperlink{rtspserver_8cpp_a0ddf1224851353fc92bfbff6f499fa97}{main}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+G\+Main\+Loop $\ast$ \mbox{\hyperlink{rtspserver_8cpp_a35126dd286141bc2cc1f045de5e1f81a}{loop}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+make your own rtspserver with gstreamer 
+
+\begin{DoxyAuthor}{Author}
+erica 
+\end{DoxyAuthor}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{rtspserver_8cpp_a958005d83d3cc044713cb225d0858211}\label{rtspserver_8cpp_a958005d83d3cc044713cb225d0858211}} 
+\index{rtspserver.\+cpp@{rtspserver.\+cpp}!D\+I\+R\+\_\+\+P\+A\+TH@{D\+I\+R\+\_\+\+P\+A\+TH}}
+\index{D\+I\+R\+\_\+\+P\+A\+TH@{D\+I\+R\+\_\+\+P\+A\+TH}!rtspserver.\+cpp@{rtspserver.\+cpp}}
+\subsubsection{\texorpdfstring{D\+I\+R\+\_\+\+P\+A\+TH}{DIR\_PATH}}
+{\footnotesize\ttfamily \#define D\+I\+R\+\_\+\+P\+A\+TH~\char`\"{}/tmp/babo2\char`\"{}}
+
+\mbox{\Hypertarget{rtspserver_8cpp_ab49f0588f844e6e0dee82cc927102996}\label{rtspserver_8cpp_ab49f0588f844e6e0dee82cc927102996}} 
+\index{rtspserver.\+cpp@{rtspserver.\+cpp}!M\+O\+U\+N\+T\+\_\+\+P\+A\+TH@{M\+O\+U\+N\+T\+\_\+\+P\+A\+TH}}
+\index{M\+O\+U\+N\+T\+\_\+\+P\+A\+TH@{M\+O\+U\+N\+T\+\_\+\+P\+A\+TH}!rtspserver.\+cpp@{rtspserver.\+cpp}}
+\subsubsection{\texorpdfstring{M\+O\+U\+N\+T\+\_\+\+P\+A\+TH}{MOUNT\_PATH}}
+{\footnotesize\ttfamily \#define M\+O\+U\+N\+T\+\_\+\+P\+A\+TH~\char`\"{}/babo2/live\char`\"{}}
+
+\mbox{\Hypertarget{rtspserver_8cpp_a3ffdaeae0bc4f2b1e8634a9ad6b9a072}\label{rtspserver_8cpp_a3ffdaeae0bc4f2b1e8634a9ad6b9a072}} 
+\index{rtspserver.\+cpp@{rtspserver.\+cpp}!S\+\_\+\+I\+R\+W\+X\+U\+GO@{S\+\_\+\+I\+R\+W\+X\+U\+GO}}
+\index{S\+\_\+\+I\+R\+W\+X\+U\+GO@{S\+\_\+\+I\+R\+W\+X\+U\+GO}!rtspserver.\+cpp@{rtspserver.\+cpp}}
+\subsubsection{\texorpdfstring{S\+\_\+\+I\+R\+W\+X\+U\+GO}{S\_IRWXUGO}}
+{\footnotesize\ttfamily \#define S\+\_\+\+I\+R\+W\+X\+U\+GO~(S\+\_\+\+I\+R\+W\+XU$\vert$S\+\_\+\+I\+R\+W\+XG$\vert$S\+\_\+\+I\+R\+W\+XO)}
+
+\mbox{\Hypertarget{rtspserver_8cpp_af7e4bc2f51096807cbf7590ab0b97f69}\label{rtspserver_8cpp_af7e4bc2f51096807cbf7590ab0b97f69}} 
+\index{rtspserver.\+cpp@{rtspserver.\+cpp}!S\+H\+M\+\_\+\+P\+A\+TH@{S\+H\+M\+\_\+\+P\+A\+TH}}
+\index{S\+H\+M\+\_\+\+P\+A\+TH@{S\+H\+M\+\_\+\+P\+A\+TH}!rtspserver.\+cpp@{rtspserver.\+cpp}}
+\subsubsection{\texorpdfstring{S\+H\+M\+\_\+\+P\+A\+TH}{SHM\_PATH}}
+{\footnotesize\ttfamily \#define S\+H\+M\+\_\+\+P\+A\+TH~\char`\"{}/tmp/babo2/live\char`\"{}}
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{rtspserver_8cpp_a65798ab3aa52fa5dc5b51fc5b9aebb6e}\label{rtspserver_8cpp_a65798ab3aa52fa5dc5b51fc5b9aebb6e}} 
+\index{rtspserver.\+cpp@{rtspserver.\+cpp}!Create\+Src\+Object@{Create\+Src\+Object}}
+\index{Create\+Src\+Object@{Create\+Src\+Object}!rtspserver.\+cpp@{rtspserver.\+cpp}}
+\subsubsection{\texorpdfstring{Create\+Src\+Object()}{CreateSrcObject()}}
+{\footnotesize\ttfamily bool Create\+Src\+Object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structSrcObject}{Src\+Object}} $\ast$}]{s }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rtspserver_8cpp_aa0a199fe147832128d7af55a6fb7bdf6}\label{rtspserver_8cpp_aa0a199fe147832128d7af55a6fb7bdf6}} 
+\index{rtspserver.\+cpp@{rtspserver.\+cpp}!Delete\+Object@{Delete\+Object}}
+\index{Delete\+Object@{Delete\+Object}!rtspserver.\+cpp@{rtspserver.\+cpp}}
+\subsubsection{\texorpdfstring{Delete\+Object()}{DeleteObject()}}
+{\footnotesize\ttfamily bool Delete\+Object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structSrcObject}{Src\+Object}} $\ast$}]{s }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rtspserver_8cpp_a0ddf1224851353fc92bfbff6f499fa97}\label{rtspserver_8cpp_a0ddf1224851353fc92bfbff6f499fa97}} 
+\index{rtspserver.\+cpp@{rtspserver.\+cpp}!main@{main}}
+\index{main@{main}!rtspserver.\+cpp@{rtspserver.\+cpp}}
+\subsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rtspserver_8cpp_a6a0c7845028a34b8232698d37d6bc5b3}\label{rtspserver_8cpp_a6a0c7845028a34b8232698d37d6bc5b3}} 
+\index{rtspserver.\+cpp@{rtspserver.\+cpp}!new\+\_\+session\+\_\+cb@{new\+\_\+session\+\_\+cb}}
+\index{new\+\_\+session\+\_\+cb@{new\+\_\+session\+\_\+cb}!rtspserver.\+cpp@{rtspserver.\+cpp}}
+\subsubsection{\texorpdfstring{new\+\_\+session\+\_\+cb()}{new\_session\_cb()}}
+{\footnotesize\ttfamily void new\+\_\+session\+\_\+cb (\begin{DoxyParamCaption}\item[{G\+Object $\ast$}]{client,  }\item[{Gst\+R\+T\+S\+P\+Session $\ast$}]{session,  }\item[{gpointer}]{user\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{rtspserver_8cpp_a35126dd286141bc2cc1f045de5e1f81a}\label{rtspserver_8cpp_a35126dd286141bc2cc1f045de5e1f81a}} 
+\index{rtspserver.\+cpp@{rtspserver.\+cpp}!loop@{loop}}
+\index{loop@{loop}!rtspserver.\+cpp@{rtspserver.\+cpp}}
+\subsubsection{\texorpdfstring{loop}{loop}}
+{\footnotesize\ttfamily G\+Main\+Loop$\ast$ loop}
+

@@ -1,0 +1,595 @@
+#include <gst/gst.h>
+#include <glib.h>
+#include <gst/rtsp-server/rtsp-server.h>
+
+
+
+//#define SHM_STREAM_PATH "/storage/tmp/%s"
+
+GMainLoop *mainloop;
+guint exit_timeout_id = 0;
+
+
+static gboolean
+bus_call (GstBus     *bus,
+          GstMessage *msg,
+          gpointer    data)
+{
+  GMainLoop *loop = (GMainLoop *) data;
+
+  switch (GST_MESSAGE_TYPE (msg)) {
+
+    case GST_MESSAGE_EOS:
+      g_print ("End of stream\n");
+      g_main_loop_quit (loop);
+      break;
+
+    case GST_MESSAGE_ERROR: {
+      gchar  *debug;
+      GError *error;
+
+      gst_message_parse_error (msg, &error, &debug);
+      g_free (debug);
+
+      g_printerr ("Error: %s\n", error->message);
+      g_error_free (error);
+
+      g_main_loop_quit (loop);
+      break;
+    }
+    default:
+      break;
+  }
+
+  return TRUE;
+}
+
+struct StreamingObject{
+  GstElement *pipeline, *source, *queue1, *depay, *parse, *decoder, *queue2, *conv, *sclcaps, *sink;
+  GstBus* bus;
+  guint bus_watch_id;  
+  bool isempty;
+};
+
+static void
+on_pad_added (GstElement *element,
+              GstPad     *pad,
+              gpointer    data)
+{
+  GstPad *sinkpad;
+  GstElement *downstream  = (GstElement *) data;
+ 
+  gchar *name;
+  name = gst_pad_get_name(pad);
+  g_print("A new pad %s was created.\n", name);
+  g_free(name);
+  if(downstream) {
+  /* We can now link this pad */
+    g_print ("Dynamic pad created, linking downstream\n");
+
+    sinkpad = gst_element_get_static_pad (downstream, "sink");
+
+    gst_pad_link (pad, sinkpad);
+    gst_object_unref (sinkpad);
+  }
+}
+
+
+static void
+cb_stream_message (GstBus *bus, GstMessage *msg, StreamingObject *self)
+{
+  switch (GST_MESSAGE_TYPE (msg))
+  {
+    case GST_MESSAGE_ERROR: {
+    case GST_MESSAGE_WARNING: {
+      GError *err = NULL;
+      gchar *debug = NULL;
+      if(GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR) {
+        gst_message_parse_error (msg, &err, &debug);
+      } else {
+        gst_message_parse_warning (msg, &err, &debug);
+      }
+
+      g_message ("%s(%s %s %s)",                 
+                 GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR ? "Error": "Warning",
+                 GST_OBJECT_NAME (msg->src),
+                 err->message,
+                 (debug) ? debug : "none");
+      g_free (debug);
+      g_error_free (err);
+    }
+
+    break;
+    case GST_MESSAGE_STREAM_START:
+    {
+//    	g_timeout_add_seconds (10, (GSourceFunc) check_blocked_stream, self);
+    }
+    break;
+    case GST_MESSAGE_EOS:
+      /* end-of-stream */
+      g_message ("EOS");
+
+      gst_element_set_state (self->pipeline, GST_STATE_READY);     
+
+//      streaming_object_restart (self, NULL);
+      break;
+
+    case GST_MESSAGE_CLOCK_LOST:
+      /* Get a new clock */
+      g_message ("Clock Lost");
+
+      gst_element_set_state (self->pipeline, GST_STATE_PAUSED);
+      gst_element_set_state (self->pipeline, GST_STATE_PLAYING);
+      break;
+
+    case GST_MESSAGE_ASYNC_DONE: {
+      GstState state;
+      GstState pending;
+      if (gst_element_get_state (GST_ELEMENT(self->pipeline), &state, &pending, 0) == GST_STATE_CHANGE_FAILURE)
+      {
+    	  g_message ("Unable to get the state of pipeline");
+        break;
+      }
+
+      if (g_strcmp0 (gst_element_state_get_name (pending), "PLAYING") == 0)
+      {
+        g_message ("Start streaming");
+      }
+      else
+      {
+        g_message (" Async Done: %s from %s to %s",                   
+                   GST_OBJECT_NAME (msg->src),
+                   gst_element_state_get_name (state),
+                   gst_element_state_get_name (pending));
+      }
+    } break;
+
+    case GST_MESSAGE_STREAM_STATUS:
+    {
+//    	GstStreamStatusType type;
+//		GstElement *owner;
+//		const GValue *val;
+//		gchar *path;
+//		GstTask *task = NULL;
+//
+//		g_message ("received STREAM_STATUS");
+//		gst_message_parse_stream_status (msg, &type, &owner);
+//
+//		val = gst_message_get_stream_status_object (msg);
+//
+//		g_message ("type:   %d", type);
+//		path = gst_object_get_path_string (GST_MESSAGE_SRC (msg));
+//		g_message ("source: %s", path);
+//		g_free (path);
+//		path = gst_object_get_path_string (GST_OBJECT (owner));
+//		g_message ("owner:  %s", path);
+//		g_free (path);
+//		g_message ("object: type %s, value %p", G_VALUE_TYPE_NAME (val),
+//		  g_value_get_object (val));
+//
+//		/* see if we know how to deal with this object */
+//		if (G_VALUE_TYPE (val) == GST_TYPE_TASK) {
+//		 task = (GstTask*)g_value_get_object (val);
+//		}
+//
+//		switch (type) {
+//		case GST_STREAM_STATUS_TYPE_CREATE:
+//		  g_message ("created task %p", task);
+//		  break;
+//		case GST_STREAM_STATUS_TYPE_ENTER:
+//		  /* g_message ("raising task priority"); */
+//		  /* setpriority (PRIO_PROCESS, 0, -10); */
+//		  break;
+//		case GST_STREAM_STATUS_TYPE_LEAVE:
+//		  break;
+//		default:
+//		  break;
+//		}
+    } break;
+	case GST_MESSAGE_PROGRESS:
+		{
+			GstProgressType type;
+			gchar *code, *text;
+
+			gst_message_parse_progress (msg, &type, &code, &text);
+
+//			switch (type) {
+//				case GST_PROGRESS_TYPE_START:
+//				case GST_PROGRESS_TYPE_CONTINUE:
+//				if (do_progress) {
+//					in_progress = TRUE;
+//					blocking = TRUE;
+//				}
+//				break;
+//				case GST_PROGRESS_TYPE_COMPLETE:
+//				case GST_PROGRESS_TYPE_CANCELED:
+//				case GST_PROGRESS_TYPE_ERROR:
+//					in_progress = FALSE;
+//				break;
+//				default:
+//				break;
+//			}
+			g_info ("progress: (%s) %s, type : %d", code, text, type);
+//			PRINT (_("Progress: (%s) %s\n"), code, text);
+			g_free (code);
+			g_free (text);
+
+//			if (do_progress && !in_progress && !buffering && prerolled)
+//			goto exit;
+
+		}
+		break;
+
+
+    case GST_MESSAGE_STATE_CHANGED: {
+//       GstState old_state, new_state;
+//       gst_message_parse_state_changed (msg, &old_state, &new_state, NULL);
+//       g_print ("[%s/%s] element %s changed state from %s to %s.\n",
+//    		    self->application,
+//    		    self->object_name,
+//                GST_OBJECT_NAME (msg->src),
+//                gst_element_state_get_name (old_state),
+//                gst_element_state_get_name (new_state));
+    } break;    
+
+    default:
+      /* Unhandled message */
+      g_info ("get unhandled cb_message %s\n",
+              GST_MESSAGE_TYPE_NAME(msg));
+      break;
+  }
+  }
+}
+
+
+
+bool CreateObject(StreamingObject* s)
+{  
+  /* Create gstreamer elements */
+  s->pipeline = gst_pipeline_new ("player");
+  s->source   = gst_element_factory_make ("rtspsrc",       "rtspsourcee");  
+  s->queue1   = gst_element_factory_make ("queue",         "front-queue"); // => src에서 받아서 depay후 queue에서 queing 중이라 1분지나면 끊어버림 
+  s->depay    = gst_element_factory_make ("rtph264depay",  "depay");
+  s->parse    = gst_element_factory_make ("h264parse",     "parser");
+  s->sclcaps  = gst_element_factory_make ("capsfilter",    "scalefilter");
+   s->sink     = gst_element_factory_make ("shmsink",   "shmsink");
+  /*
+  filter   = gst_element_factory_make("capsfilter", "filter");
+  g_assert (filter != NULL); // should always exist 
+  decoder  = gst_element_factory_make ("omxh264dec",    "decoder");
+  queue2   = gst_element_factory_make ("queue",         "back-queue");
+  conv     = gst_element_factory_make ("nvvidconv",     "scaler");
+  sclcaps  = gst_element_factory_make ("capsfilter",    "scale-filter");
+  */
+ 
+  gchar* url = "rtsp://admin:gigaeyes%21%40@192.168.0.151:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif";
+  g_printerr("url : %s\n", url);
+
+  if (!s->pipeline || !s->source || !s->queue1 || !s->depay  || !s->parse || !s->sclcaps ||  !s->sink ) {
+    g_printerr ("One element could not be created. Exiting.\n");
+    goto ERROR;
+  }
+
+  g_object_set (G_OBJECT (s->source), "location", url, NULL); 
+  g_object_set (G_OBJECT (s->source), "latency", 50, NULL);
+  g_object_set (G_OBJECT (s->source), "do-rtcp", TRUE, NULL);
+  g_object_set (G_OBJECT (s->source), "do-rtsp-keep-alive", TRUE, NULL);
+  g_object_set (G_OBJECT (s->source), "drop-on-latency", TRUE, NULL);
+
+  g_object_set (G_OBJECT (s->queue1), "flush-on-eos", TRUE, NULL);  
+  g_object_set (G_OBJECT (s->queue1), "silent", TRUE, NULL);  
+  g_object_set (G_OBJECT (s->queue1), "leaky", 2, NULL);  
+  g_object_set (G_OBJECT (s->queue1), "max-size-bytes", 65536, NULL);  
+  g_object_set (G_OBJECT (s->queue1), "max-size-buffers", 0, NULL); 
+  g_object_set (G_OBJECT (s->queue1), "max-size-time", 0, NULL);
+
+  g_object_set (G_OBJECT (s->parse), "config-interval", -1, NULL);  
+  g_object_set (G_OBJECT (s->parse), "disable-passthrough", TRUE, NULL);
+
+
+  g_object_set (G_OBJECT (s->sink), "socket-path", "/tmp/test", NULL);  
+  g_object_set (G_OBJECT (s->sink), "wait-for-connection", FALSE, NULL);
+  g_object_set (G_OBJECT (s->sink), "shm-size", 1048576, NULL);
+  g_object_set (G_OBJECT (s->sink), "enable-last-sample", FALSE, NULL);
+  g_object_set (G_OBJECT (s->sink), "sync", FALSE, NULL);
+
+  GstCaps *caps = gst_caps_new_simple(
+                    "video/x-h264",
+                    "stream-format", G_TYPE_STRING, "byte-stream",
+                    "alignment", G_TYPE_STRING, "au",
+                    NULL);
+
+  g_object_set (G_OBJECT (s->sclcaps),
+                  "caps", caps,
+                  NULL);
+
+  gst_caps_unref(caps);
+
+  GstBus *bus = gst_pipeline_get_bus (GST_PIPELINE (s->pipeline));
+  gst_bus_add_signal_watch (bus);
+  g_signal_connect (bus, "message", G_CALLBACK (cb_stream_message), s);
+  //s->bus_watch_id = gst_bus_add_watch (s->bus, bus_call, mainloop);
+  gst_object_unref (bus);
+
+
+  gst_bin_add_many (GST_BIN (s->pipeline),
+                      s->source,  s->queue1, s->depay, s->parse, s->sclcaps, s->sink, NULL);
+  gst_element_link_many (s->queue1, s->depay, s->parse, s->sclcaps, s->sink, NULL);
+        
+  g_signal_connect (s->source, "pad-added", G_CALLBACK (on_pad_added), s->queue1);
+
+  return true;
+
+  ERROR:
+  return false;
+}
+
+bool DeleteObject(StreamingObject* s){
+  gst_object_unref (GST_OBJECT (s->pipeline));
+  g_source_remove (s->bus_watch_id);
+  return true;
+}
+
+static gint
+on_timeout_switch (StreamingObject *t1)
+{
+  //g_print ("make camera object");
+  // if(GST_STATE(t1->pipeline) == GST_STATE_NULL){
+  //   g_print ("Now playing\n");
+  //   CreateObject(t1);
+  //   gst_element_set_state (t1->pipeline, GST_STATE_PLAYING);
+  // }
+  // else{
+  //   g_print ("Now stopping\n");
+  //   gst_element_set_state (t1->pipeline, GST_STATE_NULL);
+  //   DeleteObject(t1);
+  // }
+
+  if(t1->isempty){
+    g_print ("Now Create & Play\n");
+    CreateObject(t1);
+    gst_element_set_state (t1->pipeline, GST_STATE_PLAYING);
+    t1->isempty=FALSE;
+  }
+  else{
+    //g_print ("Now Delete\n");
+    //gst_element_set_state (t1->pipeline, GST_STATE_NULL);
+    //DeleteObject(t1);
+    //t1->isempty=TRUE;
+  }
+  //g_print ("Now playing\n");
+  return TRUE;
+}
+
+
+/* this timeout is periodically run to clean up the expired sessions from the
+ * pool. This needs to be run explicitly currently but might be done
+ * automatically as part of the mainloop. */
+static gboolean
+timeout (GstRTSPServer * server)
+{
+  GstRTSPSessionPool *pool;
+  g_print("Cleanup_rtsp_sessions\n");
+  pool = gst_rtsp_server_get_session_pool (server);
+  gst_rtsp_session_pool_cleanup (pool);
+  g_object_unref (pool);
+
+  return TRUE;
+}
+
+/* Timeout that runs 10 seconds after the first client connects and triggers
+ * the shutdown of the server */
+static gboolean
+ShutdownRTSPServer (GstRTSPServer * server)
+{
+  GstRTSPMountPoints *mounts;
+  g_print ("Time for everyone to go. Removing mount point\n");
+  /* Remove the mount point to prevent new clients connecting */
+  mounts = gst_rtsp_server_get_mount_points (server);
+  gst_rtsp_mount_points_remove_factory (mounts, "/test");
+  g_object_unref (mounts);
+
+  /* Filter existing clients and remove them */
+  g_print ("Disconnecting existing clients\n");
+  gst_rtsp_server_client_filter (server, client_filter, NULL);
+  return FALSE;
+}
+
+
+
+static GstRTSPFilterResult
+client_filter (GstRTSPServer * server, GstRTSPClient * client,
+    gpointer user_data)
+{
+  /* Simple filter that shuts down all clients. */
+  return GST_RTSP_FILTER_REMOVE;
+}
+
+
+static void
+client_connected (GstRTSPServer * server, GstRTSPClient * client)
+{
+  if (exit_timeout_id == 0) {
+    g_print ("First Client connected. Disconnecting everyone in 10 seconds\n");
+    exit_timeout_id =
+        g_timeout_add_seconds (50, (GSourceFunc) shutdown_timeout, server);
+  }
+}
+
+// /* called when a new media pipeline is constructed. We can query the
+//  * pipeline and configure our appsrc */
+// static void
+// media_configure (GstRTSPMediaFactory * factory, GstRTSPMedia * media,
+//     gpointer user_data)
+// {
+//   GstElement *element, *appsrc, *appsink;
+//   GstCaps *caps;
+//   MyContext *ctx;
+
+//   ctx = g_new0 (MyContext, 1);
+//   /* This pipeline generates H264 video and PCM audio. The appsinks are kept small so that if delivery is slow,
+//    * encoded buffers are dropped as needed. There's slightly more buffers (32) allowed for audio */
+//   ctx->generator_pipe =
+//       gst_parse_launch
+//       ("videotestsrc is-live=true ! x264enc speed-preset=superfast tune=zerolatency ! h264parse ! appsink name=vid max-buffers=1 drop=true "
+//       "audiotestsrc is-live=true ! appsink name=aud max-buffers=32 drop=true",
+//       NULL);
+
+//   /* make sure the data is freed when the media is gone */
+//   g_object_set_data_full (G_OBJECT (media), "rtsp-extra-data", ctx,
+//       (GDestroyNotify) ctx_free);
+
+//   /* get the element (bin) used for providing the streams of the media */
+//   element = gst_rtsp_media_get_element (media);
+
+//   /* Find the 2 app sources (video / audio), and configure them, connect to the
+//    * signals to request data */
+//   /* configure the caps of the video */
+//   caps = gst_caps_new_simple ("video/x-h264",
+//       "stream-format", G_TYPE_STRING, "byte-stream",
+//       "alignment", G_TYPE_STRING, "au",
+//       "width", G_TYPE_INT, 384, "height", G_TYPE_INT, 288,
+//       "framerate", GST_TYPE_FRACTION, 15, 1, NULL);
+//   ctx->vid_appsrc = appsrc =
+//       gst_bin_get_by_name_recurse_up (GST_BIN (element), "videosrc");
+//   ctx->vid_appsink = appsink =
+//       gst_bin_get_by_name (GST_BIN (ctx->generator_pipe), "vid");
+//   gst_util_set_object_arg (G_OBJECT (appsrc), "format", "time");
+//   g_object_set (G_OBJECT (appsrc), "caps", caps, NULL);
+//   g_object_set (G_OBJECT (appsink), "caps", caps, NULL);
+//   /* install the callback that will be called when a buffer is needed */
+//   g_signal_connect (appsrc, "need-data", (GCallback) need_data, ctx);
+//   gst_caps_unref (caps);
+
+//   caps = gst_caps_new_simple ("audio/x-raw", "format", G_TYPE_STRING, "S24BE",
+//       "layout", G_TYPE_STRING, "interleaved", "rate", G_TYPE_INT, 48000,
+//       "channels", G_TYPE_INT, 2, NULL);
+//   ctx->aud_appsrc = appsrc =
+//       gst_bin_get_by_name_recurse_up (GST_BIN (element), "audiosrc");
+//   ctx->aud_appsink = appsink =
+//       gst_bin_get_by_name (GST_BIN (ctx->generator_pipe), "aud");
+//   gst_util_set_object_arg (G_OBJECT (appsrc), "format", "time");
+//   g_object_set (G_OBJECT (appsrc), "caps", caps, NULL);
+//   g_object_set (G_OBJECT (appsink), "caps", caps, NULL);
+//   g_signal_connect (appsrc, "need-data", (GCallback) need_data, ctx);
+//   gst_caps_unref (caps);
+
+//   gst_element_set_state (ctx->generator_pipe, GST_STATE_PLAYING);
+//   gst_object_unref (element);
+// }
+
+
+
+
+int main (int   argc,
+      char *argv[])
+{
+  int ret = 0;   
+
+  //Make RTSP SERVER
+  GstRTSPServer *server;
+  GstRTSPMountPoints *mounts;
+  GstRTSPMediaFactory *factory;
+  
+  gst_init (&argc, &argv);
+
+  mainloop = g_main_loop_new (NULL, FALSE);
+
+  /* Check input arguments */
+  if (argc != 2) {
+    g_printerr ("Usage: %s <URI>\n", argv[0]);
+    goto ERROR;
+  }
+
+  //mainloop = g_main_loop_new (NULL, FALSE);
+
+   /* create a server instance */
+  server = gst_rtsp_server_new ();
+  gst_rtsp_server_set_service (server, "8554");
+  gst_rtsp_server_attach(server, NULL);
+
+  int port = gst_rtsp_server_get_bound_port (server);
+  gchar* ip = gst_rtsp_server_get_address (server);
+  g_print ("Server(%s:%d) CREATED!\n", ip, port);
+  g_free (ip);
+
+
+ 
+
+  /* get the mount points for this server, every server has a default object
+   * that be used to map uri mount points to media factories */
+  mounts = gst_rtsp_server_get_mount_points (server);
+
+  port = gst_rtsp_server_get_bound_port (server);
+  *ip = gst_rtsp_server_get_address (server);
+  g_print ("Server(%s:%d) mounted!\n", ip, port);
+  g_free (ip);
+
+   /* make a media factory for a test stream. The default media factory can use
+   * gst-launch syntax to create pipelines.
+   * any launch line works as long as it contains elements named pay%d. Each
+   * element with pay%d names will be a stream */
+  factory = gst_rtsp_media_factory_new ();
+  gst_rtsp_media_factory_set_launch (factory,"( "
+      "shmsrc socket-path=/tmp/test do-timestamp=TRUE is-live=TRUE"
+      " ! video/x-h264, width=(int)1, height=(int)1, framerate=(fraction)30/1, stream-format=(string)byte-stream, alignment=au ! "
+      " ! queue flush-on-eos=TRUE max-size-bytes=65536 leaky=2 silent=TRUE "
+      " ! rtph264pay config-interval=0 name=pay0 pt=97 "
+    //  "audiotestsrc ! audio/x-raw,rate=8000 ! "
+    //  "alawenc ! rtppcmapay name=pay1 pt=97 "
+    ")");
+
+  /* notify when our media is ready, This is called whenever someone asks for
+   * the media and a new pipeline with our appsrc is created */
+  //g_signal_connect (factory, "media-configure", (GCallback) media_configure,
+  //    NULL);  
+
+  /* attach the test factory to the /test url */
+  gst_rtsp_mount_points_add_factory (mounts, "/tmp/test", factory);
+
+  /* don't need the ref to the mapper anymore */
+  g_object_unref (mounts);
+
+  /* attach the server to the default maincontext */
+  if (gst_rtsp_server_attach (server, NULL) == 0)
+    goto ERROR;
+
+  g_signal_connect (server, "client-connected", (GCallback) client_connected, NULL);
+
+  /* add a timeout for the session cleanup */
+  //g_timeout_add_seconds (2, (GSourceFunc) timeout, server);
+
+  g_print ("stream ready at rtsps://192.168.0.13:8554/test\n");
+  g_print ("start stream\n");
+
+  struct StreamingObject t1;
+  t1.isempty = TRUE;
+
+/* Start/Stop streaming every 10 sec. */
+  g_timeout_add_seconds(1, (GSourceFunc)on_timeout_switch, &t1); 
+
+
+
+  /* Iterate */
+  g_print ("Running...\n");
+  g_main_loop_run (mainloop);
+
+  /* Out of the main loop, clean up nicely */
+  g_print ("Returned, stopping playback\n");
+  //gst_element_set_state (pipeline, GST_STATE_NULL);
+
+  g_print ("Deleting pipeline\n");
+  //gst_object_unref (GST_OBJECT (pipeline));
+  //g_source_remove (bus_watch_id);
+
+EXIT:
+  //g_main_loop_unref (mainloop);
+  gst_deinit();
+
+  return ret;
+
+ERROR:
+  g_print ("ERROR OCCURED\n");
+  ret = -1;
+  goto EXIT;
+}

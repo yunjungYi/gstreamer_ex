@@ -1,0 +1,21 @@
+#!/bin/sh
+#TIME= `uptime | cut -d'u' -f1`
+
+TIME=`date | awk '{print $4}'`
+
+#PID=`pidof valgrind`
+#PID=`pidof RTSPServer`
+#PID=`pidof RTSPServer_port_8554`
+APP_NAME=gst_test
+PID=`pidof $APP_NAME`
+#echo $PID
+
+#PID=$1
+#echo $PID
+NUM=3465
+MEM=`ps -eo pid,rss,vsize | grep "$PID"`
+#MEM=`ps -eo pid,rss,vsize | grep "$NUM"`
+P="$TIME $MEM"
+#echo $P
+echo $P >> "/home/yjlee/exmaple/Memstat/MemRTSPstable.txt"
+
